@@ -23,6 +23,7 @@ class AgendasController < ApplicationController
 
   def destroy
     if @agenda.destroy
+      DeleteMailer.delete_mail(@agenda.team.members, @agenda.title).deliver
       redirect_to dashboard_path, notice: 'アジェンダが削除されました！'
     else
       redirect_to dashboard_path, notice: 'なんらかの原因で、アジェンダは削除できませんでした'
