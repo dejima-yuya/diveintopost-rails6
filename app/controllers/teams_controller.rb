@@ -1,6 +1,6 @@
 class TeamsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_team, only: %i[show edit update destroy]
+  before_action :set_team, only: %i[show edit update destroy transfer_owner]
 
   def index
     @teams = Team.all
@@ -49,6 +49,15 @@ class TeamsController < ApplicationController
 
   def dashboard
     @team = current_user.keep_team_id ? Team.find(current_user.keep_team_id) : current_user.teams.first
+  end
+
+  def transfer_owner
+    @team.update(owner_id: params[:user_id])
+    if @team.save
+      redirect_to team_url, notice: '権限の移動に成功しました！'
+    else
+      redirect_to team_url, notice: 'なんらかの原因で、権限の移動に失敗しました！'
+    end
   end
 
   private
