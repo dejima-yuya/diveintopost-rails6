@@ -54,6 +54,7 @@ class TeamsController < ApplicationController
   def transfer_owner
     @team.update(owner_id: params[:user_id])
     if @team.save
+      TransferMailer.transfer_mail(@team.owner.email, @team.name).deliver
       redirect_to team_url, notice: '権限の移動に成功しました！'
     else
       redirect_to team_url, notice: 'なんらかの原因で、権限の移動に失敗しました！'
